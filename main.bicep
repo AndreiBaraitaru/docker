@@ -4,7 +4,7 @@ module containerRegistry './modules/container-registry.bicep' = {
     name: 'andreiAppRegistry'
     location: resourceGroup().location
     acrAdminUserEnabled: true
-    adminCredentialsKeyVaultResourceId: keyVault.outputs.id
+    adminCredentialsKeyVaultResourceId: keyVault.outputs.keyVaultId // Corrected from id to keyVaultId
     adminCredentialsKeyVaultSecretUserName: 'acr-admin-username'
     adminCredentialsKeyVaultSecretUserPassword1: 'acr-admin-password1'
     adminCredentialsKeyVaultSecretUserPassword2: 'acr-admin-password2'
@@ -34,8 +34,8 @@ module appService './modules/app-service.bicep' = {
     containerRegistryImageName: 'python-flask-app'
     containerRegistryImageVersion: 'latest'
     dockerRegistryServerUrl: 'https://andreiAppRegistry.azurecr.io'
-    dockerRegistryServerUserName: listCredentials(containerRegistry.outputs.id, '2019-05-01').username
-    dockerRegistryServerPassword: listCredentials(containerRegistry.outputs.id, '2019-05-01').passwords[0].value
+    dockerRegistryServerUserName: listCredentials(resourceId('Microsoft.ContainerRegistry/registries', 'andreiAppRegistry'), '2019-05-01').username
+    dockerRegistryServerPassword: listCredentials(resourceId('Microsoft.ContainerRegistry/registries', 'andreiAppRegistry'), '2019-05-01').passwords[0].value
   }
 }
 
