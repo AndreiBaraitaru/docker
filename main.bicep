@@ -30,7 +30,7 @@ module containerRegistry './modules/container-registry.bicep' = {
     name: name
     location: location
     acrAdminUserEnabled: acrAdminUserEnabled
-    adminCredentialsKeyVaultResourceId: keyVault.outputs.keyVaultId
+    adminCredentialsKeyVaultResourceId: keyVault.outputs.id // Use correct output name
     adminCredentialsKeyVaultSecretUserName: 'acr-admin-username'
     adminCredentialsKeyVaultSecretUserPassword1: 'acr-admin-password1'
     adminCredentialsKeyVaultSecretUserPassword2: 'acr-admin-password2'
@@ -56,10 +56,10 @@ module appService './modules/app-service.bicep' = {
     name: appServiceName
     location: location
     appServicePlanName: appServicePlan.outputs.name
-    containerRegistryName: containerRegistry.outputs.loginServer
+    containerRegistryName: name // Use ACR name instead of loginServer
     containerRegistryImageName: containerRegistryImageName
     containerRegistryImageVersion: containerRegistryImageVersion
-    dockerRegistryServerUrl: 'https://${containerRegistry.outputs.loginServer}'
+    dockerRegistryServerUrl: 'https://${name}.azurecr.io' // Use static URL
     dockerRegistryServerUserName: listCredentials(resourceId('Microsoft.ContainerRegistry/registries', name), '2019-05-01').username
     dockerRegistryServerPassword: listCredentials(resourceId('Microsoft.ContainerRegistry/registries', name), '2019-05-01').passwords[0].value
   }
