@@ -25,7 +25,7 @@ module appService './modules/app-service.bicep' = {
   params: {
     name: 'andreiAppService'
     location: resourceGroup().location
-    serverFarmResourceId: appServicePlan.outputs.serverFarmId
+    serverFarmResourceId: appServicePlan.outputs.id // Corrected from serverFarmId to id
     siteConfig: {
       linuxFxVersion: 'DOCKER|andreiAppRegistry.azurecr.io/python-flask-app:latest'
       appSettings: [
@@ -35,11 +35,11 @@ module appService './modules/app-service.bicep' = {
         }
         {
           name: 'DOCKER_REGISTRY_SERVER_USERNAME'
-          value: containerRegistry.outputs.adminUsername
+          value: containerRegistry.outputs.loginServer // Corrected from adminUsername to loginServer
         }
         {
           name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
-          value: containerRegistry.outputs.adminPassword
+          value: listCredentials(containerRegistry.id, '2019-05-01').passwords[0].value // Dynamically retrieved password
         }
       ]
     }
