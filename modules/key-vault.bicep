@@ -1,13 +1,16 @@
-@description('Required Key Vault Access')
+@description('Required Key Vault Name')
 param name string = 'AndreiAppRegistry-kv'
 
-@description('The location where the Key Vault will be deployed')
+@description('Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Array of role assignment objects that contain the roleDefinitionIdOrName and principalId to define RBAC role assignments on this resource.')
+@description('Enable vault for deployment')
+param enableVaultForDeployment bool = true
+
+@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource.')
 param roleAssignments array = [
   {
-    principalId: '7200f83e-ec45-4915-8c52-fb94147cfe5a' // Replace with your service principal client ID
+    principalId: '7200f83e-ec45-4915-8c52-fb94147cfe5a'
     roleDefinitionIdOrName: 'Key Vault Secrets User'
     principalType: 'ServicePrincipal'
   }
@@ -27,6 +30,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
     tenantId: subscription().tenantId
     enableRbacAuthorization: true
+    enabledForDeployment: enableVaultForDeployment
+    enabledForTemplateDeployment: true
     accessPolicies: []
   }
 }
@@ -41,5 +46,6 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   }
 }]
 
+output keyVaultName string = keyVault.name
 output keyVaultId string = keyVault.id
 output keyVaultUri string = keyVault.properties.vaultUri
