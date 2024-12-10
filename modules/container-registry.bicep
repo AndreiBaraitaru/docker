@@ -1,8 +1,8 @@
-param name string
-param location string
-param acrAdminUserEnabled bool
+param name string = 'andreiAppRegistry'
+param location string = resourceGroup().location
+param acrAdminUserEnabled bool = true
 
-resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01' = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-08-01' = {
   name: name
   location: location
   sku: {
@@ -12,3 +12,7 @@ resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01' = {
     adminUserEnabled: acrAdminUserEnabled
   }
 }
+
+output registryLoginServer string = containerRegistry.properties.loginServer
+output adminUsername string = listCredentials(containerRegistry.id, '2019-05-01').username
+output adminPassword string = listCredentials(containerRegistry.id, '2019-05-01').passwords[0].value

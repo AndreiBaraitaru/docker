@@ -1,62 +1,55 @@
-param location string = 'eastus'
-param containerRegistryName string
-param containerRegistryImageName string
-param containerRegistryImageVersion string
-param appServicePlanName string
-param appServiceName string
-param keyVaultName string
-param dockerRegistryServerUrl string
-param dockerRegistryServerUsername string
-param dockerRegistryServerPassword string
-
 module containerRegistry './modules/container-registry.bicep' = {
-  name: 'deployContainerRegistry'
+  name: 'andreiAppRegistryModule'
   params: {
-    name: containerRegistryName
-    location: location
+    name: 'andreiAppRegistry'
+    location: resourceGroup().location
     acrAdminUserEnabled: true
   }
 }
 
 module appServicePlan './modules/app-service-plan.bicep' = {
-  name: 'deployAppServicePlan'
+  name: 'andreiAppServicePlanModule'
   params: {
-    name: appServicePlanName
-    location: location
+    name: 'andreiAppServicePlan'
+    location: resourceGroup().location
     sku: {
-      capacity: 1
-      family: 'B'
-      name: 'B1'
-      size: 'B1'
       tier: 'Basic'
+      name: 'B1'
+      capacity: 1
     }
   }
 }
 
-module webApp './modules/app-service.bicep' = {
-  name: 'deployWebApp'
+module appService './modules/app-service.bicep' = {
+  name: 'andreiAppServiceModule'
   params: {
-    name: appServiceName
-    location: location
-    kind: 'app'
-    serverFarmResourceId: appServicePlan.outputs.appServicePlanId
+    name: 'andreiAppService'
+    location: resourceGroup().location
+    serverFarmResourceId: appServicePlan.outputs.serverFarmId
     siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:${containerRegistryImageVersion}'
-      appCommandLine: ''
-    }
-    appSettingsKeyValuePairs: {
-      WEBSITES_ENABLE_APP_SERVICE_STORAGE: false
-      DOCKER_REGISTRY_SERVER_URL: dockerRegistryServerUrl
-      DOCKER_REGISTRY_SERVER_USERNAME: dockerRegistryServerUsername
-      DOCKER_REGISTRY_SERVER_PASSWORD: dockerRegistryServerPassword
+      linuxFxVersion: 'DOCKER|andreiAppRegistry.azurecr.io/python-flask-app:latest'
+      appSettings: [
+        {
+          name: 'DOCKER_REGISTRY_SERVER_URL'
+          value: 'https://andreiAppRegistry.azurecr.io'
+        }
+        {
+          name: 'DOCKER_REGISTRY_SERVER_USERNAME'
+          value: containerRegistry.outputs.adminUsername
+        }
+        {
+          name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
+          value: containerRegistry.outputs.adminPassword
+        }
+      ]
     }
   }
 }
 
 module keyVault './modules/key-vault.bicep' = {
-  name: 'deployKeyVault'
+  name: 'andreiKeyVaultModule'
   params: {
-    name: keyVaultName
-    location: location
+    name: 'AndreiAppRegistry-kv'
+    location: resourceGroup().location
   }
 }

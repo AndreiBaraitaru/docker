@@ -1,15 +1,17 @@
-param name string
-param location string
-param sku object
-param kind string
-param reserved bool
+param name string = 'andreiAppServicePlan'
+param location string = resourceGroup().location
+param sku object = {
+  tier: 'Basic'
+  name: 'B1'
+  capacity: 1
+}
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: name
   location: location
   sku: sku
-  properties: {
-    kind: kind
-    reserved: reserved
-  }
+  kind: 'linux'
+  reserved: true
 }
+
+output serverFarmId string = appServicePlan.id
