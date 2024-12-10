@@ -30,7 +30,7 @@ module containerRegistry './modules/container-registry.bicep' = {
     name: name
     location: location
     acrAdminUserEnabled: acrAdminUserEnabled
-    adminCredentialsKeyVaultResourceId: keyVault.outputs.keyVaultId // Use the correct keyVault output
+    adminCredentialsKeyVaultResourceId: keyVault.outputs.id // Corrected from keyVaultId to id
     adminCredentialsKeyVaultSecretUserName: 'acr-admin-username'
     adminCredentialsKeyVaultSecretUserPassword1: 'acr-admin-password1'
     adminCredentialsKeyVaultSecretUserPassword2: 'acr-admin-password2'
