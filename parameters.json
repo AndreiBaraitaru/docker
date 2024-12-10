@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "name": {
+        "value": "webapp-demo"
+      },
+      "location": {
+        "value": "eastus"
+      },
+      "containerRegistryName": {
+        "value": "myacr"
+      },
+      "containerRegistryImageName": {
+        "value": "myimage"
+      },
+      "containerRegistryImageVersion": {
+        "value": "v1"
+      },
+      "dockerRegistryServerUrl": {
+        "value": "https://myacr.azurecr.io"
+      },
+      "dockerRegistryServerUsername": {
+        "value": "<your-username>"
+      },
+      "dockerRegistryServerPassword": {
+        "value": "<your-password>"
+      },
+      "appServicePlanName": {
+        "value": "myAppServicePlan"
+      }
+    }
+  }
+  
