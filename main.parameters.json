@@ -1,34 +1,24 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "containerRegistryName": {
-        "value": "AndreiAppRegistry"
-      },
-      "containerRegistryImageName": {
-        "value": "python-flask-app"
-      },
-      "containerRegistryImageVersion": {
-        "value": "latest"
-      },
-      "appServicePlanName": {
-        "value": "andreiAppServicePlan"
-      },
-      "appServiceName": {
-        "value": "andreiAppService"
-      },
-      "keyVaultName": {
-        "value": "AndreiAppRegistry-kv"
-      },
-      "dockerRegistryServerUrl": {
-        "value": "https://AndreiAppRegistry.azurecr.io"
-      },
-      "dockerRegistryServerUsername": {
-        "value": "<your-username>"
-      },
-      "dockerRegistryServerPassword": {
-        "value": "<your-password>"
-      }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "AndreiAppRegistry"
+    },
+    "location": {
+      "value": "southeurope"
+    },
+    "acrAdminUserEnabled": {
+      "value": true
+    },
+    "appServiceName": {
+      "value": "andreiAppService"
+    },
+    "containerRegistryImageName": {
+      "value": "AndreiAppRegistry"
+    },
+    "containerRegistryImageVersion": {
+      "value": "latest"
     }
   }
-  
+}
