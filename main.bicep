@@ -4,6 +4,10 @@ module containerRegistry './modules/container-registry.bicep' = {
     name: 'andreiAppRegistry'
     location: resourceGroup().location
     acrAdminUserEnabled: true
+    adminCredentialsKeyVaultResourceId: keyVault.outputs.id
+    adminCredentialsKeyVaultSecretUserName: 'acr-admin-username'
+    adminCredentialsKeyVaultSecretUserPassword1: 'acr-admin-password1'
+    adminCredentialsKeyVaultSecretUserPassword2: 'acr-admin-password2'
   }
 }
 
@@ -25,24 +29,13 @@ module appService './modules/app-service.bicep' = {
   params: {
     name: 'andreiAppService'
     location: resourceGroup().location
-    serverFarmResourceId: appServicePlan.outputs.id // Corrected from serverFarmId to id
-    siteConfig: {
-      linuxFxVersion: 'DOCKER|andreiAppRegistry.azurecr.io/python-flask-app:latest'
-      appSettings: [
-        {
-          name: 'DOCKER_REGISTRY_SERVER_URL'
-          value: 'https://andreiAppRegistry.azurecr.io'
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_USERNAME'
-          value: containerRegistry.outputs.loginServer // Corrected from adminUsername to loginServer
-        }
-        {
-          name: 'DOCKER_REGISTRY_SERVER_PASSWORD'
-          value: listCredentials(containerRegistry.id, '2019-05-01').passwords[0].value // Dynamically retrieved password
-        }
-      ]
-    }
+    appServicePlanName: appServicePlan.outputs.name
+    containerRegistryName: containerRegistry.outputs.loginServer
+    containerRegistryImageName: 'python-flask-app'
+    containerRegistryImageVersion: 'latest'
+    dockerRegistryServerUrl: 'https://andreiAppRegistry.azurecr.io'
+    dockerRegistryServerUserName: listCredentials(containerRegistry.outputs.id, '2019-05-01').username
+    dockerRegistryServerPassword: listCredentials(containerRegistry.outputs.id, '2019-05-01').passwords[0].value
   }
 }
 
