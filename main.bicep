@@ -1,15 +1,16 @@
-param name string
-param location string
+param location string = 'eastus'
 param containerRegistryName string
 param containerRegistryImageName string
 param containerRegistryImageVersion string
+param appServicePlanName string
+param appServiceName string
+param keyVaultName string
 param dockerRegistryServerUrl string
 param dockerRegistryServerUsername string
 param dockerRegistryServerPassword string
-param appServicePlanName string
 
-module acr './modules/container-registry.bicep' = {
-  name: 'deployAcr'
+module containerRegistry './modules/container-registry.bicep' = {
+  name: 'deployContainerRegistry'
   params: {
     name: containerRegistryName
     location: location
@@ -29,18 +30,16 @@ module appServicePlan './modules/app-service-plan.bicep' = {
       size: 'B1'
       tier: 'Basic'
     }
-    kind: 'Linux'
-    reserved: true
   }
 }
 
 module webApp './modules/app-service.bicep' = {
   name: 'deployWebApp'
   params: {
-    name: name
+    name: appServiceName
     location: location
     kind: 'app'
-    serverFarmResourceId: resourceId('Microsoft.Web/serverfarms', appServicePlanName)
+    serverFarmResourceId: appServicePlan.outputs.appServicePlanId
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:${containerRegistryImageVersion}'
       appCommandLine: ''
@@ -51,5 +50,13 @@ module webApp './modules/app-service.bicep' = {
       DOCKER_REGISTRY_SERVER_USERNAME: dockerRegistryServerUsername
       DOCKER_REGISTRY_SERVER_PASSWORD: dockerRegistryServerPassword
     }
+  }
+}
+
+module keyVault './modules/key-vault.bicep' = {
+  name: 'deployKeyVault'
+  params: {
+    name: keyVaultName
+    location: location
   }
 }

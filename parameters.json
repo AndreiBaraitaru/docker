@@ -2,32 +2,32 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-      "name": {
-        "value": "webapp-demo"
-      },
-      "location": {
-        "value": "eastus"
-      },
       "containerRegistryName": {
-        "value": "myacr"
+        "value": "AndreiAppRegistry"
       },
       "containerRegistryImageName": {
-        "value": "myimage"
+        "value": "python-flask-app"
       },
       "containerRegistryImageVersion": {
-        "value": "v1"
+        "value": "latest"
+      },
+      "appServicePlanName": {
+        "value": "andreiAppServicePlan"
+      },
+      "appServiceName": {
+        "value": "andreiAppService"
+      },
+      "keyVaultName": {
+        "value": "AndreiAppRegistry-kv"
       },
       "dockerRegistryServerUrl": {
-        "value": "https://myacr.azurecr.io"
+        "value": "https://AndreiAppRegistry.azurecr.io"
       },
       "dockerRegistryServerUsername": {
         "value": "<your-username>"
       },
       "dockerRegistryServerPassword": {
         "value": "<your-password>"
-      },
-      "appServicePlanName": {
-        "value": "myAppServicePlan"
       }
     }
   }
